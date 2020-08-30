@@ -64,22 +64,17 @@ def search_anilist(search, max_results=50):
 def extract_info(filename, directory):
     """
     This function parses the filename string to extract all the info
-    the database may need. It returns a tuple with: 
-        the title, 
-        the season number 
+    the database may need. It returns a tuple with:
+        the title,
+        the season number
         and a dictionary with episode info.
     """
-    #TODO: use regex for the season and episode number extraction
-    # re.search("S\d+E\d+", "One-Punch Man S01E01.mp4").group() ==> 'S01E01'
-    try:
-        title = filename.split(' ')
-        misc = title.pop(-1).split('.')[0]
-        season_num = misc.split('E')[0].replace('S', '')
-        episode_num = misc.split('E')[1]
-        title = ' '.join(title).split('\\')[-1].split('/')[-1].strip()
-        return title, season_num, {'ep': episode_num, 'file': os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)).replace('\\', '/').replace('/var/www/html/', 'https://private.fastani.net/')}
-    except IndexError:
-        return
+    #"One-Punch Man S01E01.mp4" => ("One Punch Man", 01, 04)
+    groups = re.search("(.*)?\s+S(\d+)E(\d+)\.*", a).groups()
+
+    #TODO: Catch whatever error this could return
+    #TODO: Regex file path (I'm unaware of what input would look like)
+    return groups[0], groups[1], {'ep': groups[2], 'file': os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)).replace('\\', '/').replace('/var/www/html/', 'https://private.fastani.net/')}
 
 
 default_config = './config.json'
