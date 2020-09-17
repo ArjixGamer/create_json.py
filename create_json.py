@@ -29,7 +29,7 @@ def search_tmdb(query):
         entry = [count, i[1], g, i[0]]
         table_list.append(entry)
         count += 1
-        for k in range(int(g + 1)):
+        for k in range(g + 1):
             if k == 0:
                 continue
             h = tmdb.TV_Seasons(int(i[0]), season_number=k).info()
@@ -145,7 +145,7 @@ def search_tmdb_id(tmdb_id):
     result_dict = {}
     result_dict['title'] = f['name']
     g = f['number_of_seasons']
-    for k in range(int(g + 1)):
+    for k in range(g + 1):
         if k == 0:
             continue
         h = tmdb.TV_Seasons(int(tmdb_id), season_number=k).info()
