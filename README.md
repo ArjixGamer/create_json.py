@@ -64,44 +64,57 @@ The database.json will look like this:
 
 ```json
 {
-    "83097": {
+    "12431": {
         "Seasons": [
             {
                 "Episodes": [
                     {
-                        "ep": "01",
-                        "file": "H:/Anime/Yakusoku_no_Neverland/Yakusoku no Neverland S01E01.mp4",
-                        "directory": "H:/Anime/Yakusoku_no_Neverland",
+                        "ep": "001",
+                        "file": "H:/Anime/Space Brothers/Season 1/Space Brothers S01E001.mp4",
+                        "directory": "H:/Anime/Space Brothers/Season 1",
+                        "timestamp": 1600200007.283316,
                         "season_num": "01",
-                        "thumb": "H:/Anime/Yakusoku_no_Neverland/thumbs/83097_thumbnail_01.jpg",
-                        "title": "121045"
+                        "thumb": "H:/Anime/Space Brothers/Season 1/thumbs/12431_thumbnail_001.jpg",
+                        "title": "Little Brother Hibito and Big Brother Mutta"
                     },
                     {
-                        "ep": "02",
-                        "file": "H:/Anime/Yakusoku_no_Neverland/Yakusoku no Neverland S01E02.mp4",
-                        "directory": "H:/Anime/Yakusoku_no_Neverland",
+                        "ep": "002",
+                        "file": "H:/Anime/Space Brothers/Season 1/Space Brothers S01E002.mp4",
+                        "directory": "H:/Anime/Space Brothers/Season 1",
+                        "timestamp": 1600204968.1122825,
                         "season_num": "01",
-                        "thumb": "H:/Anime/Yakusoku_no_Neverland/thumbs/83097_thumbnail_02.jpg",
-                        "title": "131045"
+                        "thumb": "H:/Anime/Space Brothers/Season 1/thumbs/12431_thumbnail_002.jpg",
+                        "title": "My Shining Star"
                     },
                     {
-                        "ep": "03",
-                        "file": "H:/Anime/Yakusoku_no_Neverland/Yakusoku no Neverland S01E03.mp4",
-                        "directory": "H:/Anime/Yakusoku_no_Neverland",
+                        "ep": "003",
+                        "file": "H:/Anime/Space Brothers/Season 1/Space Brothers S01E003.mp4",
+                        "directory": "H:/Anime/Space Brothers/Season 1",
+                        "timestamp": 1600208432.2625673,
                         "season_num": "01",
-                        "thumb": "H:/Anime/Yakusoku_no_Neverland/thumbs/83097_thumbnail_03.jpg",
-                        "title": "181045"
+                        "thumb": "H:/Anime/Space Brothers/Season 1/thumbs/12431_thumbnail_003.jpg",
+                        "title": "The Man with the Advantage and the Running Female Doctor"
                     },
                     {
-                        "ep": "04",
-                        "file": "H:/Anime/Yakusoku_no_Neverland/Yakusoku no Neverland S01E04.mp4",
-                        "directory": "H:/Anime/Yakusoku_no_Neverland",
+                        "ep": "004",
+                        "file": "H:/Anime/Space Brothers/Season 1/Space Brothers S01E004.mp4",
+                        "directory": "H:/Anime/Space Brothers/Season 1",
+                        "timestamp": 1600251484.1724074,
                         "season_num": "01",
-                        "thumb": "H:/Anime/Yakusoku_no_Neverland/thumbs/83097_thumbnail_04.jpg",
-                        "title": "291045"
+                        "thumb": "H:/Anime/Space Brothers/Season 1/thumbs/12431_thumbnail_004.jpg",
+                        "title": "Next to Hibito"
+                    },
+                    {
+                        "ep": "005",
+                        "file": "H:/Anime/Space Brothers/Season 1/Space Brothers S01E005.mp4",
+                        "directory": "H:/Anime/Space Brothers/Season 1",
+                        "timestamp": 1600287264.3941905,
+                        "season_num": "01",
+                        "thumb": "H:/Anime/Space Brothers/Season 1/thumbs/12431_thumbnail_005.jpg",
+                        "title": "Days of Missing"
                     }
                 ],
-                "pretty_title": "The Promised Neverland"
+                "pretty_title": "Space Brothers"
             }
         ]
     }
