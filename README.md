@@ -60,7 +60,10 @@ For Example:
 
 
 Note:
+
 If the anime is a movie then simply name it as Season 1 Episode 1
+
+
 e.g "Totoro S01E01.mp4"
 
 
