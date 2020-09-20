@@ -58,6 +58,12 @@ For Example:
 		One-Punch Man S01E02.mp4
 ```
 
+
+Note:
+If the anime is a movie then simply name it as Season 1 Episode 1
+e.g "Totoro S01E01.mp4"
+
+
 ## JSON Structure
 
 The database.json will look like this:
