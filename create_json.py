@@ -35,7 +35,7 @@ def search_tmdb(query, _type):
             languages = ['ja', 'cn', 'ko']
             if f['original_language'] not in languages:
                 continue
-        elif _type == 'TV' or _type == 'OVA':
+        if _type != 'MOVIE':
             f = tmdb.TV(int(i[0])).info()
             if 'ja' not in f['languages'] and 'cn' not in f['languages']:
                 continue
@@ -271,13 +271,20 @@ def add_json(files, gg):
             num1 = input("Select number: [0]: ")
             print('\n----------------------------------------\n')
             try:
-                num1 = int(num1)
+                if 'm' in num1:
+                    _type = 'MOVIE'
+                else:
+                    _type = False
+                num1 = int(num1.replace('m', ''))
             except ValueError:
                 num1 = 0
 
             if num1 > 20:
-                tmdb_dict = search_tmdb_id(num1, _type)
-                tmdb_id = num1
+                if not bool(_typee):
+                    tmdb_dict = search_tmdb_id(num1, _type)
+                else:
+                    tmdb_dict = search_tmdb_id(num1, _type)
+                tmdb_id = f'{num1}_{_type}'
             else:
                 tmdb_dict = tmdb_dict[ids[num1]]
                 tmdb_id = ids[num1]
@@ -308,7 +315,7 @@ def add_json(files, gg):
                 continue
 
             if int(season) == int(key):
-                if str(int(ep['ep'])) in [str(int(x)) for x, y in tmdb_dict[key].items()]:
+                if int(ep['ep']) in [int(x) for x, y in tmdb_dict[key].items()]:
                     dat = value[str(int(ep['ep']))]
                     thumb_dir = os.path.join(ep['directory'], 'thumbs')
                     if bool(dat['thumbnail']):
@@ -324,7 +331,7 @@ def add_json(files, gg):
                     else:
                         thumb = 'N/A'
 
-                    ep['thumb'] = thumb.replace('\\', '/')#.replace('/var/www/html/', 'https://private.fastani.net/')
+                    ep['thumb'] = thumb
                     ep['title'] = dat['title']
 
         gg[anilist_id]['Seasons'][season]['Episodes'].append(ep)
