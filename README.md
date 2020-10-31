@@ -20,7 +20,7 @@ This project uses both the AniList and theMovieDB API's, thanks to tmdb I can ta
 
 1. Place the script in the root folder of all your anime.
 
-2. Open the script with any text editor and replace TMDB_API_v3_KEY with your API key (PS: make sure the api key is quoted.)
+2. Edit the options.py with the required settings. (for now only the api key and metadata update interval)
 
 3. Open a command window at that same directory
 
