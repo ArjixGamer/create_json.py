@@ -4,6 +4,8 @@ import os
 from tabulate import tabulate
 import tmdbsimple as tmdb
 import key
+import time
+import copy
 
 tmdb.API_KEY = TMDB_API_KEY
 
@@ -51,14 +53,17 @@ def search_tmdb(query, _type):
         count += 1
 
         if _type != 'MOVIE':
-            for k in range(1, g):
-                h = tmdb.TV_Seasons(int(i[0]), season_number=k).info()
+            for k in range(g + 1):
+                try:
+                    h = tmdb.TV_Seasons(int(i[0]), season_number=k).info()
+                except Exception:
+                    continue
                 result_dict[i[0] + '_' + _type][str(k)] = {}
                 for u in h['episodes']:
                     result_dict[i[0] + '_' + _type][str(k)][str(u['episode_number'])] = {
-                    'title': u['name'], 
-                    'thumbnail': f"https://image.tmdb.org/t/p/original{u['still_path']}" 
-                    if u['still_path'] != None else None
+                        'title': u['name'],
+                        'thumbnail': f"https://image.tmdb.org/t/p/original{u['still_path']}"
+                        if u['still_path'] != None else None
                     }
         else:
             result_dict[i[0] + '_' + _type]['1'] = {}
@@ -68,6 +73,7 @@ def search_tmdb(query, _type):
     table = tabulate(table_list, headers, tablefmt='psql')
     table = '\n'.join(table.split('\n')[::-1])
     return table, result_dict
+
 
 def search_anilist(search, max_results=50):
     """
@@ -91,14 +97,15 @@ def search_anilist(search, max_results=50):
     }
     """
     variables = {
-            'search': search,
-            'page': 1,
-            'perPage': max_results,
-            'type': 'ANIME'
+        'search': search,
+        'page': 1,
+        'perPage': max_results,
+        'type': 'ANIME'
     }
     url = 'https://graphql.anilist.co'
 
-    results = requests.post(url, json={'query': query, 'variables': variables}).json()
+    results = requests.post(
+        url, json={'query': query, 'variables': variables}).json()
 
     result_list = results['data']['Page']['media']
     final_result = []
@@ -109,7 +116,6 @@ def search_anilist(search, max_results=50):
         jp_title = anime['title']['romaji']
         ani_id = anime['id']
         _type = anime['format']
-
 
         entry = [count, jp_title, _type, ani_id]
         final_result.append(entry)
@@ -129,7 +135,7 @@ def extract_info(filename, directory):
         the season number 
         and a dictionary with episode info.
     """
-    #TODO: use regex for the season and episode number extraction
+    # TODO: use regex for the season and episode number extraction
     # re.search("S\d+E\d+", "One-Punch Man S01E01.mp4").group() ==> 'S01E01'
     try:
         title = filename.split(' ')
@@ -138,11 +144,11 @@ def extract_info(filename, directory):
         episode_num = misc.split('E')[1]
         title = ' '.join(title).split('\\')[-1].split('/')[-1].strip()
         ep = {
-            'ep': episode_num, 
-            'file': os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)).replace('\\', '/'), 
-            'directory': os.path.abspath(directory).replace('\\', '/'), 
+            'ep': episode_num,
+            'file': os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)).replace('\\', '/'),
+            'directory': os.path.abspath(directory).replace('\\', '/'),
             'timestamp': os.path.getctime(os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)))
-            }
+        }
         return title, season_num, ep
     except IndexError:
         return
@@ -166,30 +172,39 @@ def read_config(config):
         return json.load(f)
 
 
+cache_tmdb_requests = {}
+
+
 def search_tmdb_id(tmdb_id, _type):
-    if _type == 'MOVIE':
-        f = tmdb.Movies(int(tmdb_id)).info()
-        result_dict = {}
-        result_dict['title'] = f['title']
-        g = 1
-        result_dict['1'] = {}
-        result_dict['1']['1'] = {'title': f['title'], 'thumbnail': f"https://image.tmdb.org/t/p/original{f['poster_path']}"}
+    if '{}_{}'.format(tmdb_id, _type) not in cache_tmdb_requests:
+        if _type == 'MOVIE':
+            f = tmdb.Movies(int(tmdb_id)).info()
+            result_dict = {}
+            result_dict['title'] = f['title']
+            g = 1
+            result_dict['1'] = {}
+            result_dict['1']['1'] = {'title': f['title'], 'thumbnail': f"https://image.tmdb.org/t/p/original{f['poster_path']}"}
+        else:
+            f = tmdb.TV(int(tmdb_id)).info()
+            result_dict = {}
+            result_dict['title'] = f['name']
+            g = f['number_of_seasons']
+            for k in range(int(g + 1)):
+                try:
+                    h = tmdb.TV_Seasons(int(tmdb_id), season_number=k).info()
+                except Exception:
+                    continue
+                result_dict[str(k)] = {}
+                for u in h['episodes']:
+                    result_dict[str(k)][str(u['episode_number'])] = {
+                        'title': u['name'],
+                        'thumbnail': f"http://image.tmdb.org/t/p/w1280_and_h720_bestv2{u['still_path']}"
+                        if u['still_path'] != None else None
+                    }
+        cache_tmdb_requests['{}_{}'.format(
+            tmdb_id, _type)] = copy.deepcopy(result_dict)
     else:
-        f = tmdb.TV(int(tmdb_id)).info()
-        result_dict = {}
-        result_dict['title'] = f['name']
-        g = f['number_of_seasons']
-        for k in range(int(g + 1)):
-            if k == 0:
-                continue
-            h = tmdb.TV_Seasons(int(tmdb_id), season_number=k).info()
-            result_dict[str(k)] = {}
-            for u in h['episodes']:
-                result_dict[str(k)][str(u['episode_number'])] = {
-                    'title': u['name'], 
-                    'thumbnail': f"http://image.tmdb.org/t/p/w1280_and_h720_bestv2{u['still_path']}" 
-                    if u['still_path'] != None else None
-                }
+        result_dict = cache_tmdb_requests['{}_{}'.format(tmdb_id, _type)]
     return result_dict
 
 
@@ -222,6 +237,11 @@ def search_anilist_id(item_id):
     else:
         return jsd
 
+
+pretty_print = {}
+updated_config = {}
+
+
 def add_json(files, gg):
     """
     This function creates the dictionary that will be then converted and exported as a json.
@@ -233,28 +253,55 @@ def add_json(files, gg):
         if type(f) == type(None):
             continue
         title, season, ep = f
+        if title not in pretty_print:
+            print('Parsing: {}'.format(title.strip()))
+            pretty_print[title] = ''
         ep['season_num'] = season
         id_to_anime = read_config(default_config)
         try:
+            three_days = -259200
             anilist_id = id_to_anime["Known-Anime"][title + '.' + season]['ani_id']
             _type = id_to_anime["Known-Anime"][title + '.' + season]['format']
             tmdb_dict = id_to_anime["Known-Anime"][title + '.' + season]['tmdb_dict']
             tmdb_id = id_to_anime["Known-Anime"][title + '.' + season]['tmdb_id']
             pretty_title = id_to_anime["Known-Anime"][title + '.' + season]['pretty_title']
+            if 'last_modified' not in id_to_anime["Known-Anime"][title + '.' + season]:
+                id_to_anime["Known-Anime"][title + '.' + season]['last_modified'] = time.time()
+                write_to_config(id_to_anime, default_config)
+            last_modified = id_to_anime["Known-Anime"][title + '.' + season]['last_modified']
 
-        except KeyError: 
+            if last_modified - time.time() <= three_days:
+                fg = str(anilist_id) + str(season) + str(tmdb_id)
+                if fg not in updated_config:
+                    updated_config[fg] = time.time()
+                    print('Fetching new metadata for {} from theMovieDB.'.format(
+                        pretty_title))
+                    f = search_tmdb_id(tmdb_id.split('_')[0], _type)
+                    if str(int(season)) in f:
+                        tmdb_dict = {str(int(season)): f[str(int(season))]}
+                    else:
+                        tmdb_dict = f
+                    id_to_anime["Known-Anime"][title + '.' + season]['tmdb_dict'] = tmdb_dict
+                    id_to_anime["Known-Anime"][title + '.' + season]['last_modified'] = time.time()
+                write_to_config(id_to_anime, default_config)
+
+        except KeyError:
             table1, anilist_data = search_anilist(title)
             print(f'Anilist results for: {title} Season: {season}')
             print(table1)
             num = input("Select number: [0]: ")
 
             try:
-                num = int(num)
+                if 'e' in num:
+                    value_bool = True
+                else:
+                    value_bool = False
+                num = int(num.replace('e', '') if value_bool else num)
             except ValueError:
                 num = 0
 
             ################################
-            if num <= 50:
+            if num <= 50 and not value_bool:
                 choice = anilist_data[num]
                 anilist_id = str(choice[-1])
                 _type = str(choice[-2])
@@ -273,17 +320,17 @@ def add_json(files, gg):
             try:
                 if 'm' in num1:
                     _type = 'MOVIE'
+                    num1 = int(num1.replace('m', ''))
+                elif 't' in num1:
+                    _type = 'TV'
+                    num1 = int(num1.replace('t', ''))
                 else:
-                    _type = False
-                num1 = int(num1.replace('m', ''))
+                    num1 = int(num1)
             except ValueError:
                 num1 = 0
 
             if num1 > 20:
-                if not bool(_typee):
-                    tmdb_dict = search_tmdb_id(num1, _type)
-                else:
-                    tmdb_dict = search_tmdb_id(num1, _type)
+                tmdb_dict = search_tmdb_id(num1, _type)
                 tmdb_id = f'{num1}_{_type}'
             else:
                 tmdb_dict = tmdb_dict[ids[num1]]
@@ -292,6 +339,7 @@ def add_json(files, gg):
             pretty_title = tmdb_dict['title']
 
             id_to_anime["Known-Anime"][title + '.' + season] = {}
+            id_to_anime["Known-Anime"][title + '.' + season]['last_modified'] = time.time()
             id_to_anime["Known-Anime"][title + '.' + season]['ani_id'] = anilist_id
             id_to_anime["Known-Anime"][title + '.' + season]['tmdb_id'] = tmdb_id
             id_to_anime["Known-Anime"][title + '.' + season]['format'] = _type
@@ -331,7 +379,8 @@ def add_json(files, gg):
                     else:
                         thumb = 'N/A'
 
-                    ep['thumb'] = thumb
+                    ep['thumb'] = thumb.replace(
+                        '\\', '/').replace('/var/www/html/', 'https://cdn.fastani.net/')
                     ep['title'] = dat['title']
 
         gg[anilist_id]['Seasons'][season]['Episodes'].append(ep)
@@ -350,17 +399,18 @@ def conv_list(gg):
         fg = []
         for c, d in seasons.items():
             fg.append(d)
-        fg = sorted(fg, key=lambda entry: int(entry['Episodes'][0]['season_num']))
+        fg = sorted(fg, key=lambda entry: int(
+            entry['Episodes'][0]['season_num']))
 
         biggest_season = int(fg[-1]['Episodes'][0]['season_num'])
         # for season in fg:
-
 
         gg[ani_id]['Seasons'] = fg
 
         for kk in gg[ani_id]['Seasons']:
             if kk != {}:
-                kk['Episodes'] = sorted(kk['Episodes'], key=lambda entry: int(entry['ep']))
+                kk['Episodes'] = sorted(
+                    kk['Episodes'], key=lambda entry: int(entry['ep']))
 
 
 def save_to_json(data, path='./database.json'):
@@ -371,8 +421,9 @@ def save_to_json(data, path='./database.json'):
         json.dump(data, f, indent=4)
 
 
-files_list = []
-
+# files_list = []
+hh = {}
+os.chdir('./html')
 for directory, __, files in os.walk(".", topdown=True):
     """
     This for loop makes a list
@@ -381,8 +432,8 @@ for directory, __, files in os.walk(".", topdown=True):
     """
     for file in files:
         if file.endswith('.mp4'):
-            files_list.append([file, directory])
-hh = {}
-add_json(files_list, hh)
+            add_json([[file, directory]], hh)
+
+# add_json(files_list, hh)
 conv_list(hh)
 save_to_json(hh)
