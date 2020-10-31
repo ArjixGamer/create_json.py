@@ -4,7 +4,7 @@ import requests
 import time
 import json
 import copy
-import key
+import options
 import os
 
 tmdb.API_KEY = TMDB_API_KEY
