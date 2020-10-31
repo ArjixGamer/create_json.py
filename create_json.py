@@ -7,7 +7,7 @@ import copy
 import options
 import os
 
-tmdb.API_KEY = TMDB_API_KEY
+tmdb.API_KEY = options.TMDB_API_KEY
 
 
 def search_tmdb(query, _type):
@@ -270,7 +270,7 @@ def add_json(files, gg):
                 write_to_config(id_to_anime, default_config)
             last_modified = id_to_anime["Known-Anime"][title + '.' + season]['last_modified']
 
-            if last_modified - time.time() <= -TMDB_METADATA_UPDATE_INTERVAL:
+            if last_modified - time.time() <= -options.TMDB_METADATA_UPDATE_INTERVAL:
                 fg = str(anilist_id) + str(season) + str(tmdb_id)
                 if fg not in updated_config:
                     updated_config[fg] = time.time()
