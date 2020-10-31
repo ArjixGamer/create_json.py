@@ -3,9 +3,9 @@ import json
 import os
 from tabulate import tabulate
 import tmdbsimple as tmdb
+import key
 
-
-tmdb.API_KEY = 'TMDB_API_v3_KEY'
+tmdb.API_KEY = TMDB_API_KEY
 
 
 def search_tmdb(query, _type):
