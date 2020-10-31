@@ -379,8 +379,7 @@ def add_json(files, gg):
                     else:
                         thumb = 'N/A'
 
-                    ep['thumb'] = thumb.replace(
-                        '\\', '/').replace('/var/www/html/', 'https://cdn.fastani.net/')
+                    ep['thumb'] = thumb
                     ep['title'] = dat['title']
 
         gg[anilist_id]['Seasons'][season]['Episodes'].append(ep)
@@ -423,7 +422,7 @@ def save_to_json(data, path='./database.json'):
 
 # files_list = []
 hh = {}
-os.chdir('./html')
+
 for directory, __, files in os.walk(".", topdown=True):
     """
     This for loop makes a list
