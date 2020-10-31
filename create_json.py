@@ -1,11 +1,11 @@
-import requests
-import json
-import os
 from tabulate import tabulate
 import tmdbsimple as tmdb
-import key
+import requests
 import time
+import json
 import copy
+import key
+import os
 
 tmdb.API_KEY = TMDB_API_KEY
 
