@@ -259,7 +259,7 @@ def add_json(files, gg):
         ep['season_num'] = season
         id_to_anime = read_config(default_config)
         try:
-            three_days = -259200
+
             anilist_id = id_to_anime["Known-Anime"][title + '.' + season]['ani_id']
             _type = id_to_anime["Known-Anime"][title + '.' + season]['format']
             tmdb_dict = id_to_anime["Known-Anime"][title + '.' + season]['tmdb_dict']
@@ -270,7 +270,7 @@ def add_json(files, gg):
                 write_to_config(id_to_anime, default_config)
             last_modified = id_to_anime["Known-Anime"][title + '.' + season]['last_modified']
 
-            if last_modified - time.time() <= three_days:
+            if last_modified - time.time() <= -TMDB_METADATA_UPDATE_INTERVAL:
                 fg = str(anilist_id) + str(season) + str(tmdb_id)
                 if fg not in updated_config:
                     updated_config[fg] = time.time()
