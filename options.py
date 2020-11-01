@@ -25,3 +25,4 @@ fileFormat = '.mp4'
 The file extension to look for, the code iterates over all the files in a directory.
 If a file has the above extension it will be added to the list of items that should be processed.
 """
+FULL_SCAN = False
