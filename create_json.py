@@ -136,7 +136,7 @@ def extract_info(filename, directory):
         and a dictionary with episode info.
     """
     # TODO: use regex for the season and episode number extraction
-    # re.search("S\d+E\d+", "One-Punch Man S01E01.mp4").group() ==> 'S01E01'
+    # groups = re.search("(.*)?\s+S(\d+)E(\d+)\.*", a).groups() ==> 'S01E01'
     try:
         title = filename.split(' ')
         misc = title.pop(-1).split('.')[0]
