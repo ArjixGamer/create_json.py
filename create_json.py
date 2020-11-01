@@ -154,7 +154,7 @@ def extract_info(filename, directory):
         return
 
 
-default_config = './config.json'
+default_config = options.jsonConfig
 
 
 def write_to_config(data, config):
