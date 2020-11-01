@@ -38,6 +38,7 @@ All variables you can change are located in the config.py file. Most of them are
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TMDB_API_KEY | You store the API key you got from tmdb.                                                                                                                   |
 | jsonConfig   | Where your saved configs are, by default it's '\./config\.json'                                                                                            |
+| jsonPath     | The full filepath where the database will be stored at.\nNote: the script does not read what the database.json contains, it just saves.                    |
 | fileFormat   | The file format which info is collected from, by default it's '\.mp4'                                                                                      |
 | FULL_SCAN    | If set to True it will scan all the files in a directory first before parsing them, if set to False it will scan on the go.                                |
 | TMDB_METADATA_UPDATE_INTERVAL | The seconds it will wait until it updates the saved metadata from the config.json.                                                        |
