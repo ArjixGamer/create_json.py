@@ -26,3 +26,7 @@ The file extension to look for, the code iterates over all the files in a direct
 If a file has the above extension it will be added to the list of items that should be processed.
 """
 FULL_SCAN = False
+"""
+When set to True, the script will first scan all the files under the directory,
+and then start parsing them, if set to False it will parse them as it scans the directory.
+"""
