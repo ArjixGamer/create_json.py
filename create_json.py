@@ -412,7 +412,7 @@ def conv_list(gg):
                     kk['Episodes'], key=lambda entry: int(entry['ep']))
 
 
-def save_to_json(data, path='./database.json'):
+def save_to_json(data, path=options.jsonPath):
     """
     This function just saves the provided dict to a json file
     """
