@@ -430,7 +430,7 @@ for directory, __, files in os.walk(".", topdown=True):
     and all the subdirectories
     """
     for file in files:
-        if file.endswith('.mp4'):
+        if file.endswith(options.fileFormat):
             add_json([[file, directory]], hh)
 
 # add_json(files_list, hh)
