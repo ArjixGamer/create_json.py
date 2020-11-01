@@ -419,20 +419,29 @@ def save_to_json(data, path=options.jsonPath):
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
 
-
-# files_list = []
 hh = {}
-
-for directory, __, files in os.walk(".", topdown=True):
-    """
-    This for loop makes a list
-    with all the .mp4 files from the Current Working Directory
-    and all the subdirectories
-    """
-    for file in files:
-        if file.endswith(options.fileFormat):
-            add_json([[file, directory]], hh)
-
-# add_json(files_list, hh)
+if options.FULL_SCAN:
+    files_list = []
+    for directory, __, files in os.walk(".", topdown=True):
+        """
+        This for loop makes a list
+        with all the .mp4 files from the Current Working Directory
+        and all the subdirectories
+        """
+        for file in files:
+            if file.endswith(options.fileFormat):
+                files_list.append([file, directory])
+else:
+    for directory, __, files in os.walk(".", topdown=True):
+        """
+        This for loop makes a list
+        with all the .mp4 files from the Current Working Directory
+        and all the subdirectories
+        """
+        for file in files:
+            if file.endswith(options.fileFormat):
+                add_json([[file, directory]], hh)
+if options.FULL_SCAN:
+    add_json(files_list, hh)
 conv_list(hh)
 save_to_json(hh)
