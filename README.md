@@ -30,8 +30,17 @@ This project uses both the AniList and theMovieDB API's, thanks to tmdb I can ta
 
 6. When all the unknown anime are searched and found the script will save a database.json with [this](#JSON-Structure) structure, it will also save another JSON file with all the known anime, so that on the 2nd run and onwards it won't search again for the same anime, only for the unknown ones.
 
+## Variables you can change
 
+All variables you can change are located in the config.py file. Most of them are self explanatory but here is what they do.
 
+| Variables    | Description                                                                                                                                                |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TMDB_API_KEY | You store the API key you got from tmdb.                                                                                                                   |
+| jsonConfig   | Where your saved configs are, by default it's '\./config\.json'                                                                                            |
+| fileFormat   | The file format which info is collected from, by default it's '\.mp4'                                                                                      |
+| FULL_SCAN    | If set to True it will scan all the files in a directory first before parsing them, if set to False it will scan on the go.                                |
+| TMDB_METADATA_UPDATE_INTERVAL | The seconds it will wait until it updates the saved metadata from the config.json.                                                        |
 
 ## Naming Scheme
 
