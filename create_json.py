@@ -6,6 +6,7 @@ import json
 import copy
 import options
 import os
+import re
 
 tmdb.API_KEY = options.TMDB_API_KEY
 
@@ -128,30 +129,43 @@ def search_anilist(search, max_results=50):
 
 
 def extract_info(filename, directory):
-    """
-    This function parses the filename string to extract all the info
-    the database may need. It returns a tuple with: 
-        the title, 
-        the season number 
-        and a dictionary with episode info.
-    """
-    # TODO: use regex for the season and episode number extraction
-    # groups = re.search("(.*)?\s+S(\d+)E(\d+)\.*", a).groups() ==> 'S01E01'
-    try:
-        title = filename.split(' ')
-        misc = title.pop(-1).split('.')[0]
-        season_num = misc.split('E')[0].replace('S', '')
-        episode_num = misc.split('E')[1]
-        title = ' '.join(title).split('\\')[-1].split('/')[-1].strip()
+        """
+        This function parses the filename string to extract all the info
+        the database may need. It returns a tuple with: 
+            the title, 
+            the season number 
+            and a dictionary with episode info.
+        """
+        # try:
+        #     title = filename.split(' ')
+        #     misc = title.pop(-1).split('.')[0]
+        #     season_num = misc.split('E')[0].replace('S', '')
+        #     episode_num = misc.split('E')[1]
+        #     title = ' '.join(title).split('\\')[-1].split('/')[-1].strip()
+        #     ep = {
+        #         'ep': episode_num,
+        #         'file': os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)).replace('\\', '/'),
+        #         'directory': os.path.abspath(directory).replace('\\', '/'),
+        #         'timestamp': os.path.getctime(os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)))
+        #     }
+        #     return title, season_num, ep
+        # except IndexError:
+        #     return
+        try:
+            groups = re.search("(.*)?\s+S(\d+)E(\d+)\.*",
+                               filename.replace('\\', '/')).groups()
+        except Exception:
+            return
+
+        title = groups[0].split('/')[-1]
+        season_num = groups[1]
         ep = {
-            'ep': episode_num,
-            'file': os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)).replace('\\', '/'),
-            'directory': os.path.abspath(directory).replace('\\', '/'),
-            'timestamp': os.path.getctime(os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)))
-        }
+                'ep': groups[2],
+                'file': os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)).replace('\\', '/'),
+                'directory': os.path.abspath(directory).replace('\\', '/'),
+                'timestamp': os.path.getctime(os.path.abspath(os.path.join(directory.replace('\\', '/'), filename)))
+            }
         return title, season_num, ep
-    except IndexError:
-        return
 
 
 default_config = options.jsonConfig
