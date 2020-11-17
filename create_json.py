@@ -455,7 +455,6 @@ else:
         for file in files:
             if file.endswith(options.fileFormat):
                 add_json([[file, directory]], hh)
-if options.FULL_SCAN:
-    add_json(files_list, hh)
+
 conv_list(hh)
 save_to_json(hh)
