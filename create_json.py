@@ -62,7 +62,11 @@ def search_tmdb(query, _type):
                 result_dict[i[0] + '_' + _type][str(k)] = {}
                 for u in h['episodes']:
                     result_dict[i[0] + '_' + _type][str(k)][str(u['episode_number'])] = {
-                        'title': u['name'],
+                        try:
+                            name = u['name']
+                        except KeyError:
+                            name = None
+                        'title': name,
                         'thumbnail': f"https://image.tmdb.org/t/p/original{u['still_path']}"
                         if u['still_path'] != None else None
                     }
@@ -211,7 +215,11 @@ def search_tmdb_id(tmdb_id, _type):
                 result_dict[str(k)] = {}
                 for u in h['episodes']:
                     result_dict[str(k)][str(u['episode_number'])] = {
-                        'title': u['name'],
+                        try:
+                            name = u['name']
+                        except KeyError:
+                            name = None
+                        'title': name,
                         'thumbnail': f"http://image.tmdb.org/t/p/w1280_and_h720_bestv2{u['still_path']}"
                         if u['still_path'] != None else None
                     }
